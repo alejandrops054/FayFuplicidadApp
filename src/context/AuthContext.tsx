@@ -37,7 +37,7 @@ export const AuthProvider = ({children}: any) => {
     if (!token) return dispatch({type: 'noAuthenticated'});
 
     //Hay token
-    const resp = await fayApi.get('/auth/token');
+    const resp = await fayApi.post('/auth/token');
     if (resp.status !== 200) {
       return dispatch({type: 'noAuthenticated'});
     }

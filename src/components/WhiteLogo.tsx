@@ -8,7 +8,7 @@ export const WhiteLogo = () => {
         alignItems: 'center',
       }}>
       <Image
-        source={require('../../assets/APP.fw.png')}
+        source={require('../../assets/ea5d9298-afff-4553-83f6-95be3dfb8603.jpg')}
         style={{
           width: 200,
           height: 100,
