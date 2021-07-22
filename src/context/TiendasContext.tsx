@@ -7,14 +7,14 @@ import {TiendasResponse} from '../Interfaces/app-interface';
 type TiendasContextProps = {
   tiendas: TiendasResponse[];
   loadTiendas: () => Promise<void>;
-  addTiendas: (tiendaId: string, tiendaNombre: string) => Promise<void>;
+  addTiendas: (id: string, tiendaNombre: string) => Promise<void>;
   updateTienda: (
     id: string,
     tiendaNombre: string,
     tiendaClave: string,
   ) => Promise<void>;
   deleteTienda: (id: string) => Promise<void>;
-  loadTiendaById: (id: string) => Promise<void>;
+  loadTiendaById: (id: string) => Promise<TiendasResponse>;
 };
 
 export const TiendasContext = createContext({} as TiendasContextProps);
@@ -28,12 +28,12 @@ export const TiendasProvider = ({children}: any) => {
 
   const loadTiendas = async () => {
     const resp = await fayApi.get<TiendasResponse>('/tiendas');
-    //se destructura las tiendas ya existentes
-    setTiendas([...resp.data.tiendas]);
-    console.log(resp.data.tiendas);
+
+    setTiendas([resp.data]);
+    console.log('JSON de las tiendas', resp.data);
   };
 
-  const addTiendas = async (tiendaId: string, tiendaNombre: string) => {};
+  const addTiendas = async (id: string, tiendaNombre: string) => {};
   const updateTienda = async (
     id: string,
     tiendaNombre: string,
@@ -58,3 +58,15 @@ export const TiendasProvider = ({children}: any) => {
     </TiendasContext.Provider>
   );
 };
+function async(arg0: {
+  data: any;
+}):
+  | ((
+      value: import('axios').AxiosResponse<any>,
+    ) =>
+      | import('axios').AxiosResponse<any>
+      | PromiseLike<import('axios').AxiosResponse<any>>)
+  | null
+  | undefined {
+  throw new Error('Function not implemented.');
+}

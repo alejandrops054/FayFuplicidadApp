@@ -70,6 +70,7 @@ export const AuthProvider = ({children}: any) => {
       console.log(data);
     } catch (error) {
       console.log(error.response.data);
+
       dispatch({
         type: 'addError',
         payload:

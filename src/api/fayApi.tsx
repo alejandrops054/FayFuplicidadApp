@@ -6,9 +6,10 @@ const baseURL = 'http://test.fayweb.mx/api';
 const fayApi = axios.create({baseURL});
 
 fayApi.interceptors.request.use(async config => {
+  let bearer = 'Bearer ';
   const token = await AsyncStorage.getItem('token');
   if (token) {
-    config.headers['x-token'] = token;
+    config.headers['Authorization'] = bearer + token;
   }
   return config;
 });
