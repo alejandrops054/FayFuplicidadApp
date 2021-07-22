@@ -2,10 +2,10 @@ import {resolvePlugin} from '@babel/core';
 import React, {createContext, useEffect, useState} from 'react';
 import {AppRegistry} from 'react-native';
 import fayApi from '../api/fayApi';
-import {TiendasResponse} from '../Interfaces/app-interface';
+import {TiendasResponse, Tiendas} from '../Interfaces/app-interface';
 
 type TiendasContextProps = {
-  tiendas: TiendasResponse[];
+  tiendas: Tiendas[];
   loadTiendas: () => Promise<void>;
   addTiendas: (id: string, tiendaNombre: string) => Promise<void>;
   updateTienda: (
@@ -14,13 +14,13 @@ type TiendasContextProps = {
     tiendaClave: string,
   ) => Promise<void>;
   deleteTienda: (id: string) => Promise<void>;
-  loadTiendaById: (id: string) => Promise<TiendasResponse>;
+  loadTiendaById: (id: string) => Promise<Tiendas>;
 };
 
 export const TiendasContext = createContext({} as TiendasContextProps);
 
 export const TiendasProvider = ({children}: any) => {
-  const [tiendas, setTiendas] = useState<TiendasResponse[]>([]);
+  const [tiendas, setTiendas] = useState<Tiendas[]>([]);
 
   useEffect(() => {
     loadTiendas();
@@ -29,8 +29,8 @@ export const TiendasProvider = ({children}: any) => {
   const loadTiendas = async () => {
     const resp = await fayApi.get<TiendasResponse>('/tiendas');
 
-    setTiendas([resp.data]);
-    console.log('JSON de las tiendas', resp.data);
+    setTiendas([...tiendas, resp.data.tienda]);
+    console.log('JSON de las tiendas', resp.data.tienda);
   };
 
   const addTiendas = async (id: string, tiendaNombre: string) => {};
