@@ -7,34 +7,31 @@ import {CampsContext} from '../context/CampsContex';
 import {TiendasStackParams} from '../navigator/TiendasNavigation';
 import {sytyleTiendas} from '../theme/tiendasThemes';
 
-interface Props extends StackScreenProps<TiendasStackParams, 'TiendasScreen'> {}
+interface Props
+  extends StackScreenProps<TiendasStackParams, 'CampañasScreen'> {}
 
-export const TiendasScreen = ({navigation}: Props) => {
-  const {tienda, loadTiendas} = useContext(TiendasContext);
+export const CampañasScreen = ({navigation}: Props) => {
   const {camps} = useContext(CampsContext);
 
   const [searchQuery, setSearchQuery] = React.useState('');
   const onChangeSearch = (query: React.SetStateAction<string>) =>
     setSearchQuery(query);
 
-  console.log('valores del context', tienda);
+  console.log('valores del context', camps);
 
   //PUll refresh
 
   return (
     <View style={sytyleTiendas.View}>
       <FlatList
-        data={tienda}
-        keyExtractor={p => p.id}
+        data={camps}
+        keyExtractor={p => p.tienda_id}
         renderItem={({item}) => (
           <TouchableOpacity
             activeOpacity={0.8}
-            onPress={() =>
-              navigation.navigate('CampañasScreen', {
-                id: item.id,
-              })
-            }>
-            <Text style={sytyleTiendas.TiendaName}>{item.tienda_nombre}</Text>
+            //onPress={() =>navigation.navigate('CampañasScreen', {tienda_id: })}
+          >
+            <Text style={sytyleTiendas.TiendaName}>{item.tienda}</Text>
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => (
