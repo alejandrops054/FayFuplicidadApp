@@ -1,11 +1,7 @@
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {Text, View, Button, TextInput, Image} from 'react-native';
 import {useForm} from '../hooks/useForm';
-import {
-  launchCamera,
-  launchImageLibrary,
-  ImagePickerResponse,
-} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Card, Title, Paragraph} from 'react-native-paper';
 import {DetallesContext} from '../context/DetalleContext';
 import {Picker} from '@react-native-picker/picker';
@@ -98,7 +94,22 @@ export const DetalleScreen = ({route, navigation}: Props) => {
       resp => {
         if (resp.didCancel) return;
         if (!resp.uri) return;
-        console.log(resp);
+        console.log('Camara url temparal', resp.uri);
+        setTempUri(resp.uri);
+      },
+    );
+  };
+
+  const tekePhotoFromGallery = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        quelity: 0.5,
+      },
+      resp => {
+        if (resp.didCancel) return;
+        if (!resp.uri) return;
+        console.log('media url temparal', resp.uri);
         setTempUri(resp.uri);
       },
     );
