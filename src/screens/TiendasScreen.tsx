@@ -1,9 +1,15 @@
-import React, {useContext} from 'react';
-import {Text, View, FlatList, TouchableOpacity} from 'react-native';
-import {Searchbar} from 'react-native-paper';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import {
+  Text,
+  View,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+  TextInput,
+} from 'react-native';
+import fayApi from '../api/fayApi';
 import {StackScreenProps} from '@react-navigation/stack';
 import {TiendasContext} from '../context/TiendasContext';
-import {CampsContext} from '../context/CampsContex';
 import {TiendasStackParams} from '../navigator/TiendasNavigation';
 import {sytyleTiendas} from '../theme/tiendasThemes';
 
@@ -11,11 +17,6 @@ interface Props extends StackScreenProps<TiendasStackParams, 'TiendasScreen'> {}
 
 export const TiendasScreen = ({navigation}: Props) => {
   const {tienda, loadTiendas} = useContext(TiendasContext);
-  const {camps} = useContext(CampsContext);
-
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = (query: React.SetStateAction<string>) =>
-    setSearchQuery(query);
 
   console.log('valores del context', tienda);
 
@@ -31,10 +32,15 @@ export const TiendasScreen = ({navigation}: Props) => {
             activeOpacity={0.8}
             onPress={() =>
               navigation.navigate('CampañasScreen', {
-                id: item.id,
+                tienda_id: item.id,
               })
             }>
-            <Text style={sytyleTiendas.TiendaName}>{item.tienda_nombre}</Text>
+            <Text style={sytyleTiendas.TiendaName}>
+              {item.tienda_nombre} - ({item.tienda_clave})
+            </Text>
+            <Text style={sytyleTiendas.TiendaName}>
+              {item.cadena_nombre} - Porgres: {item.porcentaje}%
+            </Text>
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => (

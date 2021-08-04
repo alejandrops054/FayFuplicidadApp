@@ -1,37 +1,52 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Text, View, FlatList, TouchableOpacity} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {StackScreenProps} from '@react-navigation/stack';
-import {TiendasContext} from '../context/TiendasContext';
-import {CampsContext} from '../context/CampsContex';
 import {TiendasStackParams} from '../navigator/TiendasNavigation';
 import {sytyleTiendas} from '../theme/tiendasThemes';
+import fayApi from '../api/fayApi';
 
 interface Props
   extends StackScreenProps<TiendasStackParams, 'CampañasScreen'> {}
 
-export const CampañasScreen = ({navigation}: Props) => {
-  const {camps} = useContext(CampsContext);
+export const CampañasScreen = ({route, navigation}: Props) => {
+  const {tienda_id} = route.params;
+  const [camps, setCamps] = useState([]);
 
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const onChangeSearch = (query: React.SetStateAction<string>) =>
-    setSearchQuery(query);
+  //carga de nada mas get
+  useEffect(() => {
+    const fetchData = () => {
+      fayApi
+        .get('/camps', {
+          params: {
+            tienda_id: tienda_id,
+          },
+        })
+        .then(({data}) => {
+          setCamps(data);
+        });
+    };
+    fetchData();
+  }, []);
 
-  console.log('valores del context', camps);
+  console.log('data campas', camps.data);
 
   //PUll refresh
-
   return (
     <View style={sytyleTiendas.View}>
       <FlatList
-        data={camps}
-        keyExtractor={p => p.tienda_id}
+        data={camps.data}
+        keyExtractor={item => item.info_id}
         renderItem={({item}) => (
           <TouchableOpacity
             activeOpacity={0.8}
-            //onPress={() =>navigation.navigate('CampañasScreen', {tienda_id: })}
-          >
-            <Text style={sytyleTiendas.TiendaName}>{item.tienda}</Text>
+            onPress={() =>
+              navigation.navigate('DetalleScreen', {
+                info_id: item.info_id,
+              })
+            }>
+            <Text style={sytyleTiendas.TiendaName}>{item.camp_nombre}</Text>
+            <Text style={sytyleTiendas.TiendaName}>{item.concepto}</Text>
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => (
