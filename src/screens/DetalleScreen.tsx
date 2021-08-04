@@ -109,9 +109,9 @@ export const DetalleScreen = ({route, navigation}: Props) => {
         if (resp.didCancel) return;
         if (resp.errorCode) return;
         if (resp.errorMessage) return;
-        if (resp.assets![0].uri) return;
-        console.log('ruta de la imagen', resp.assets![0].uri!);
-        setTempUri(resp.assets![0].uri!);
+        if (!resp.assets![0].uri) return;
+        console.log('ruta de la imagen', resp.assets![0].uri);
+        setTempUri(resp.assets![0].uri);
       },
     );
   };
@@ -124,7 +124,7 @@ export const DetalleScreen = ({route, navigation}: Props) => {
       },
       resp => {
         if (resp.didCancel) return;
-        if (resp.assets![0].uri) return;
+        if (!resp.assets![0].uri!) return;
         console.log('url temporal galeria', resp.assets![0].uri!);
         setTempUri(resp.assets![0].uri!);
       },
