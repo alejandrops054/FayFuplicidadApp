@@ -1,15 +1,24 @@
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {Text, View, Button, TextInput, Image} from 'react-native';
-import {useForm} from '../hooks/useForm';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {Card, Title, Paragraph} from 'react-native-paper';
-import {DetallesContext} from '../context/DetalleContext';
 import {Picker} from '@react-native-picker/picker';
 import {StackScreenProps} from '@react-navigation/stack';
+import React, {useContext, useEffect, useState} from 'react';
+import {
+  Button,
+  Image,
+  RefreshControlBase,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {Card, Paragraph, Title} from 'react-native-paper';
+import fayApi from '../api/fayApi';
+import {DetallesContext} from '../context/DetalleContext';
+import {useForm} from '../hooks/useForm';
+import {useListadoClave} from '../hooks/useListadoClave';
 import {TiendasStackParams} from '../navigator/TiendasNavigation';
 import {sytyleDetalleTheme} from '../theme/detalleTheme';
-import {useListadoClave} from '../hooks/useListadoClave';
-import fayApi from '../api/fayApi';
 
 interface Props extends StackScreenProps<TiendasStackParams, 'DetalleScreen'> {}
 
@@ -61,6 +70,8 @@ export const DetalleScreen = ({route, navigation}: Props) => {
     });
   }, [tiendas]);
 
+  {
+    /*
   //funcion de consula de detalles existentes
   useEffect(() => {
     loadDetatelles();
@@ -71,7 +82,8 @@ export const DetalleScreen = ({route, navigation}: Props) => {
     if (info_id.length === 0) return;
     const detalle = await loadDetalles(info_id);
     console.log('prueba de loadDetalles', detalle);
-  };
+  };*/
+  }
 
   //se llaman el context DetallesContext por medio de addDetalles
   const saveOrUpdate = async () => {
@@ -89,28 +101,32 @@ export const DetalleScreen = ({route, navigation}: Props) => {
     launchCamera(
       {
         mediaType: 'photo',
+        saveToPhotos: true,
+        cameraType: 'back',
         quality: 0.5,
       },
       resp => {
         if (resp.didCancel) return;
-        if (!resp.uri) return;
-        console.log('Camara url temparal', resp.uri);
-        setTempUri(resp.uri);
+        if (resp.errorCode) return;
+        if (resp.errorMessage) return;
+        if (resp.assets![0].uri) return;
+        console.log('ruta de la imagen', resp.assets![0].uri!);
+        setTempUri(resp.assets![0].uri!);
       },
     );
   };
 
-  const tekePhotoFromGallery = () => {
+  const takePhotoFromGallery = () => {
     launchImageLibrary(
       {
         mediaType: 'photo',
-        quelity: 0.5,
+        quality: 0.5,
       },
       resp => {
         if (resp.didCancel) return;
-        if (!resp.uri) return;
-        console.log('media url temparal', resp.uri);
-        setTempUri(resp.uri);
+        if (resp.assets![0].uri) return;
+        console.log('url temporal galeria', resp.assets![0].uri!);
+        setTempUri(resp.assets![0].uri!);
       },
     );
   };
@@ -159,7 +175,11 @@ export const DetalleScreen = ({route, navigation}: Props) => {
       <View style={sytyleDetalleTheme.flex}>
         <Button title="Cámara" color="#730217" onPress={takePhoto} />
         <View style={sytyleDetalleTheme.espacio}></View>
-        <Button title="Galería" color="#730217" onPress={() => {}} />
+        <Button
+          title="Galería"
+          color="#730217"
+          onPress={takePhotoFromGallery}
+        />
       </View>
       <View style={sytyleDetalleTheme.espacio}></View>
       <Button title="Guardar" color="#730217" onPress={saveOrUpdate} />
@@ -167,3 +187,6 @@ export const DetalleScreen = ({route, navigation}: Props) => {
     </View>
   );
 };
+function uri(uri: any) {
+  throw new Error('Function not implemented.');
+}
