@@ -33,7 +33,7 @@ export const DetalleScreen = ({route, navigation}: Props) => {
   const [text, setText] = React.useState('');
   const {claves} = useListadoClave();
 
-  const {loadDetalles, addDetalles} = useContext(DetallesContext);
+  const {loadDetalles, addDetalles, uploadImagen} = useContext(DetallesContext);
   //carga de nada mas get
   useEffect(() => {
     const fetchData = () => {
@@ -85,18 +85,6 @@ export const DetalleScreen = ({route, navigation}: Props) => {
   };*/
   }
 
-  //se llaman el context DetallesContext por medio de addDetalles
-  const saveOrUpdate = async () => {
-    fayApi
-      .post('/enviar-informacion', {
-        id: info_id,
-        imagen: imagen,
-      })
-      .then(response => {
-        console.log('respuesta', response);
-      });
-  };
-
   const takePhoto = () => {
     launchCamera(
       {
@@ -112,6 +100,8 @@ export const DetalleScreen = ({route, navigation}: Props) => {
         if (!resp.assets![0].uri) return;
         console.log('ruta de la imagen', resp.assets![0].uri);
         setTempUri(resp.assets![0].uri);
+        console.log('data resp', resp.assets);
+        uploadImag(resp, info_id);
       },
     );
   };
@@ -129,6 +119,39 @@ export const DetalleScreen = ({route, navigation}: Props) => {
         setTempUri(resp.assets![0].uri!);
       },
     );
+  };
+
+  const uploadImag = async (data: any, info_id: string) => {
+    const filToUpload = {
+      uri: data.assets![0].uri,
+      type: data.assets![0].type,
+      name: data.assets![0].fileName,
+    };
+
+    const formData = new FormData();
+    formData.append('imagen', filToUpload);
+
+    try {
+      const resp = await fayApi.post('/enviar-informacion', {
+        id: info_id,
+        formData,
+      });
+      console.log(resp);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //se llaman el context DetallesContext por medio de addDetalles
+  const saveOrUpdate = async () => {
+    fayApi
+      .post('/enviar-informacion', {
+        id: info_id,
+        imagen: imagen,
+      })
+      .then(response => {
+        console.log('respuesta', response);
+      });
   };
 
   return (

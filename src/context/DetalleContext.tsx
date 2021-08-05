@@ -1,4 +1,5 @@
 import React, {createContext, useEffect, useState} from 'react';
+import {ImagePickerResponse} from 'react-native-image-picker';
 import fayApi from '../api/fayApi';
 import {DetallesResponse} from '../Interfaces/app-interface';
 
@@ -8,6 +9,7 @@ type DetallesContextProps = {
   loadDataDetalles: (info_id: string) => Promise<void>;
   loadDetalles: (info_id: string) => Promise<DetallesResponse>;
   addDetalles: (imagen: string) => Promise<void>;
+  uploadImagen: (data: any, info_id: string) => Promise<void>;
 };
 
 export const DetallesContext = createContext({} as DetallesContextProps);
@@ -44,9 +46,38 @@ export const DetalleContext = ({children, route}: any) => {
     return resp.data;
   };
 
+  const uploadImagen = async (data: ImagePickerResponse, info_id: string) => {
+    const filToUpload = {
+      uri: data.assets![0].uri,
+      type: data.assets![0].type,
+      name: data.assets![0].fileName,
+    };
+
+    console.log('data filToUpload', filToUpload);
+
+    const formData = new FormData();
+    formData.append('imagen', filToUpload);
+
+    try {
+      const resp = await fayApi.post(
+        `/enviar-informacion/${info_id}`,
+        formData,
+      );
+      console.log(resp);
+    } catch (error) {
+      console.log({error});
+    }
+  };
+
   return (
     <DetallesContext.Provider
-      value={{detalles, loadDataDetalles, loadDetalles, addDetalles}}>
+      value={{
+        detalles,
+        loadDataDetalles,
+        loadDetalles,
+        addDetalles,
+        uploadImagen,
+      }}>
       {children}
     </DetallesContext.Provider>
   );
