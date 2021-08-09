@@ -18,6 +18,7 @@ export const sytyleDetalleTheme = StyleSheet.create({
     height: 45,
     marginTop: 5,
     marginBottom: 15,
+    padding: 10,
   },
   flex: {
     flexDirection: 'row',

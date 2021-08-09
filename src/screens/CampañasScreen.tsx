@@ -1,8 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Text, View, FlatList, TouchableOpacity} from 'react-native';
+import {Text, View, FlatList, TouchableOpacity, Alert} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {StackScreenProps} from '@react-navigation/stack';
 import {TiendasStackParams} from '../navigator/TiendasNavigation';
+import {CampsContext} from '../context/CampsContex';
 import {sytyleTiendas} from '../theme/tiendasThemes';
 import fayApi from '../api/fayApi';
 
@@ -10,8 +11,16 @@ interface Props
   extends StackScreenProps<TiendasStackParams, 'CampañasScreen'> {}
 
 export const CampañasScreen = ({route, navigation}: Props) => {
-  const {tienda_id} = route.params;
-  const [camps, setCamps] = useState([]);
+  const {tienda_id = ''} = route.params;
+  const [camping, setCamps] = useState('');
+  //const {loadCamps, camping} = useContext(CampsContext);
+
+  {
+    /*useEffect(() => {
+    loadCamps(tienda_id);
+  }, []);
+  */
+  }
 
   //carga de nada mas get
   useEffect(() => {
@@ -29,13 +38,14 @@ export const CampañasScreen = ({route, navigation}: Props) => {
     fetchData();
   }, []);
 
-  console.log('data campas', camps.data);
+  console.log('data campas', camping);
 
+  console.log('Camps', camping);
   //PUll refresh
   return (
     <View style={sytyleTiendas.View}>
       <FlatList
-        data={camps.data}
+        data={camping.data}
         keyExtractor={item => item.info_id}
         renderItem={({item}) => (
           <TouchableOpacity
@@ -56,3 +66,6 @@ export const CampañasScreen = ({route, navigation}: Props) => {
     </View>
   );
 };
+function setCamps(data: any) {
+  throw new Error('Function not implemented.');
+}

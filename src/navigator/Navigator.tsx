@@ -1,11 +1,12 @@
 import React, {useContext} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-
 import {LoginScreens} from '../screens/LoginScreens';
 import {ProtectdScreen} from '../screens/ProtectdScreen';
 import {AuthContext} from '../context/AuthContext';
 import {LoadingScreen} from '../screens/LoadingScreen';
 import {TiendasNavigation} from './TiendasNavigation';
+import {NavigationContainer} from '@react-navigation/native';
+import {TabNavigator} from './HomeNavigator';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ export const Navigation = () => {
             name="TiendasNavigation"
             component={TiendasNavigation}
           />
+          {/*<Stack.Screen name="TabNavigator" component={TabNavigator} />*/}
           <Stack.Screen name="ProtectdScreen" component={ProtectdScreen} />
         </>
       )}

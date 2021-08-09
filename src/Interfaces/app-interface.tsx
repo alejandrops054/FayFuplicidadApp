@@ -75,7 +75,7 @@ export interface CampsResponse {
   tiendas: Tienda[];
   camp_nombre: string;
   concepto: string;
-  info_id: number;
+  info_id: string;
   cadena: Datum[];
 }
 
@@ -83,7 +83,7 @@ export interface Datum {
   tienda_id: string;
   camp_nombre: string;
   concepto: string;
-  info_id: number;
+  info_id: string;
 }
 
 //Detalles

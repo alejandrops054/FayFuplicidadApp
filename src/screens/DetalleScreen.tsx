@@ -7,9 +7,11 @@ import {
   RefreshControlBase,
   ScrollView,
   StyleSheet,
+  Alert,
   Text,
   TextInput,
   View,
+  Platform,
 } from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Card, Paragraph, Title} from 'react-native-paper';
@@ -25,12 +27,10 @@ interface Props extends StackScreenProps<TiendasStackParams, 'DetalleScreen'> {}
 export const DetalleScreen = ({route, navigation}: Props) => {
   const [tempUri, setTempUri] = useState<string>();
   const {info_id = ''} = route.params;
-
   const [camp, setCamps] = useState('');
   const [tiendas, setTienda] = useState('');
   const [concepto, setConsepto] = useState('');
   const [claveTienda, setClaveTienda] = useState('');
-  const [text, setText] = React.useState('');
   const {claves} = useListadoClave();
 
   const {loadDetalles, addDetalles, uploadImagen} = useContext(DetallesContext);
@@ -52,6 +52,10 @@ export const DetalleScreen = ({route, navigation}: Props) => {
     };
     fetchData();
   }, []);
+
+  const UselessTextInput = () => {
+    return <TextInput editable maxLength={40} />;
+  };
 
   //Formulario
   const {imagen, detalles, clave, comentario, form, onChange} = useForm({
@@ -100,7 +104,7 @@ export const DetalleScreen = ({route, navigation}: Props) => {
         if (!resp.assets![0].uri) return;
         console.log('ruta de la imagen', resp.assets![0].uri);
         setTempUri(resp.assets![0].uri);
-        console.log('data resp', resp.assets);
+        console.log('data resp', resp.assets![0]);
         uploadImag(resp, info_id);
       },
     );
@@ -123,22 +127,42 @@ export const DetalleScreen = ({route, navigation}: Props) => {
 
   const uploadImag = async (data: any, info_id: string) => {
     const filToUpload = {
-      uri: data.assets![0].uri,
-      type: data.assets![0].type,
       name: data.assets![0].fileName,
+      type: data.assets![0].type,
+      uri: data.assets![0].uri,
     };
 
     const formData = new FormData();
-    formData.append('imagen', filToUpload);
 
-    try {
-      const resp = await fayApi.post('/enviar-informacion', {
-        id: info_id,
-        formData,
-      });
-      console.log(resp);
-    } catch (error) {
-      console.log(error);
+    formData.append('id', info_id);
+    formData.append('camp', camp);
+    formData.append('producto', 'producto');
+    formData.append('detalles', detalles);
+    formData.append('imagenes', filToUpload);
+    formData.append('clave', clave);
+    formData.append('comentario', comentario);
+
+    const headers = {
+      'Content-Type': 'multipart/form-data',
+      'Accept-Encoding': 'gzip, deflate, br',
+    };
+
+    if (detalles) {
+      Alert.alert('No hay comentario');
+    }
+    if (!clave) {
+      Alert.alert('No hay ninguna clave');
+    }
+
+    if (clave) {
+      try {
+        const resp = await fayApi.post('/enviar-informacion', formData, {
+          headers,
+        });
+        console.log(resp);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -177,12 +201,12 @@ export const DetalleScreen = ({route, navigation}: Props) => {
         ))}
       </Picker>
       <Text style={sytyleDetalleTheme.label}>Comentarios</Text>
-      <TextInput
+      <UselessTextInput
         style={sytyleDetalleTheme.textInput}
-        value={text}
-        onChangeText={value => onChange(value, 'comentario')}
+        multiline
         numberOfLines={40}
-        defaultValue={text}
+        onChangeText={(value: any) => onChangeText(value, 'comentario')}
+        value={Text}
       />
       <View style={sytyleDetalleTheme.espacio}></View>
       {/*Si tengo una imagen la muestro*/}
@@ -211,5 +235,8 @@ export const DetalleScreen = ({route, navigation}: Props) => {
   );
 };
 function uri(uri: any) {
+  throw new Error('Function not implemented.');
+}
+function onChangeText(value: any, arg1: string) {
   throw new Error('Function not implemented.');
 }

@@ -12,6 +12,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {TiendasContext} from '../context/TiendasContext';
 import {TiendasStackParams} from '../navigator/TiendasNavigation';
 import {sytyleTiendas} from '../theme/tiendasThemes';
+import {SearchBar} from 'react-native-elements';
 
 interface Props extends StackScreenProps<TiendasStackParams, 'TiendasScreen'> {}
 

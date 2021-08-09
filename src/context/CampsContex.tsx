@@ -3,32 +3,24 @@ import fayApi from '../api/fayApi';
 import {CampsResponse, TiendasResponse} from '../Interfaces/app-interface';
 
 type CampsContextPros = {
-  camps: CampsResponse[];
-  loadCamps: () => Promise<void>;
+  camping: CampsResponse[];
+  loadCamps: (tienda_id: string) => Promise<void>;
 };
 
 export const CampsContext = createContext({} as CampsContextPros);
 
-export const CampsProvider = ({route, children}: any) => {
-  const [camps, setCamps] = useState<CampsResponse[]>([]);
-  const {tienda_id} = route.params;
+export const CampsProvider = ({children}: any) => {
+  const [camping, setCamps] = useState<CampsResponse[]>([]);
 
-  useEffect(() => {
-    loadCamps();
-  }, []);
-
-  const loadCamps = async () => {
-    const resp = await fayApi.get('/camps', {
-      params: {
-        tienda_id: tienda_id,
-      },
-    });
-    setCamps([...resp.data]);
-    console.log('Data Camps', ...resp.data);
+  const loadCamps = async (tienda_id: string) => {
+    const resp = await fayApi.get(`/camps${tienda_id}`);
+    setCamps([resp.data]);
+    console.log('Data Camps', resp.data);
+    return resp.data;
   };
 
   return (
-    <CampsContext.Provider value={{camps, loadCamps}}>
+    <CampsContext.Provider value={{camping, loadCamps}}>
       {children}
     </CampsContext.Provider>
   );
